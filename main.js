@@ -11,7 +11,8 @@ let parser = new argparse.ArgumentParser({
 
 let defaults = {
     nameToOrder: {
-        "S_SKIN": -5
+        "S_SKIN": -5,
+        "S_END": 5,
     }
 }
 
@@ -40,9 +41,11 @@ function processFilename(filename) {
         data.type = "file"
         data.data = fs.readFileSync(filename)
     }
-    if (defaults.nameToOrder[data.name]) {
-        data.order = defaults.nameToOrder[data.name]
-    }
+    Object.keys(defaults.nameToOrder).forEach(prefix => {
+        if (data.name.startsWith(prefix)) {
+            data.order = defaults.nameToOrder[prefix]
+        }
+    })
     if (args.debug) {
         //console.warn(`DEBUG: ${filename}'s name is ${data.name}, order ${data.order}`)
     }
