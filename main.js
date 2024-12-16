@@ -11,9 +11,9 @@ let parser = new argparse.ArgumentParser({
 
 let defaults = {
     nameToOrder: {
-        "S_SKIN": -105,
-        "P_SKIN": -105,
-        "S_END": 5,
+        "S_SKIN": -5,
+        "P_SKIN": -5,
+        "S_END": 105,
     }
 }
 
@@ -36,7 +36,7 @@ function processFilename(filename) {
         order: 0
     }
     if (stat.isDirectory()) {
-        data.order = -100
+        data.order = 100
         data.type = "folder"
     } else {
         data.type = "file"
