@@ -53,15 +53,38 @@ function genColumn(jimage, x) {
     let posts = []
     let activePost = null
     let imHeight = jimage.getHeight()
+
+	let first254 = true
+	let postY = 0
     for (let y = 0; y <= imHeight; y++) {
+		if (imHeight >= 256 && postY == 254) {
+			if (activePost) {
+				posts.push(activePost)
+				activePost = null
+			}
+
+			// get our posts to the correct offset with an empty one
+			posts.push({
+				topdelta: 254,
+				length: 0,
+				data: []
+			})
+
+			first254 = false
+			postY = 0
+		}
+
         let pixColor = (y < imHeight) ? hex2rgba(jimage.getPixelColor(x, y)) : null
         if (pixColor && pixColor[3] > TRANSTHRESH) {
             if (!activePost) {
                 activePost = {
-                    topdelta: y,
+                    topdelta: postY,
                     length: 0,
                     data: []
                 }
+
+				if (!first254)
+					postY = 0
             }
             activePost.length += 1
             activePost.data.push(closestOnPalette(pixColor.slice(0, 3)))
@@ -69,6 +92,8 @@ function genColumn(jimage, x) {
             posts.push(activePost)
             activePost = null
         }
+
+		postY++
     }
     let buf = Buffer.alloc(1 + posts.map(post => 4 + post.length).reduce((a, b) => a+b, 0))
     let off = 0
